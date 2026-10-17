@@ -1,6 +1,6 @@
 # EnDML
 
-# Efficient and Effective Calibration of Numerical Model Outputs Using Hierarchical Dynamic Models
+# Comorbidity Exposure-Window Definitions and Multidimensional Disparities in Long COVID Risk
 
 Ensemble double/debiased machine learning for binary exposure and outcome variables to assess heterogeneous Long COVID risk associated with preexisting comorbidities.
 
