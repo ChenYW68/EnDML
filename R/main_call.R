@@ -67,9 +67,6 @@ Sensitivity.imputed.inc.deceased <- identical(
 )
 
 
-
-# Long_COVID_df <- read_parquet("./data/Long_COVID_Secondary_Data_all_2026_05.parquet")
-# Long_COVID_df <- read_parquet("./data/Long_COVID.parquet")
 Long_COVID_df <- read_parquet(data_path)
 Long_COVID_df[, Dead := 0L]
 # Compute condition (vectorized, no copies)
@@ -115,8 +112,6 @@ selected.ind <- which(colnames(Long_COVID_df) %in% Selected.variable)
 #   filter(.imp != 0) %>%
 #   group_by(.id) %>%
 #   dplyr::summarise(across(where(is.numeric), mean), .groups = "drop")
-
-
 
 
 #' Apply the Selected Missing-Data Scenario
