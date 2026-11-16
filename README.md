@@ -49,9 +49,7 @@ The output files include predicted outcomes for the test sets and estimated prop
 
 # Data
 
-This folder reproduces every main-text and supplementary figure of the
-Long COVID manuscript (NCOMMS-26-052891, Revision 2b) from a single
-curated workbook.
+This folder reproduces every main-text and supplementary figure of the Long COVID manuscript from a single curated workbook.
 
 | File | Role |
 | --- | --- |
