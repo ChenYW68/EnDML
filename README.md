@@ -50,9 +50,6 @@ For the default cohort setting, the main analysis writes parquet summaries, cros
 ```text
 results/Cohort_I/
 ```
-
-The current code uses `before = 1` for Cohort IV but saves those outputs under `results/Cohort_I/`, as required by the manuscript's file-naming convention. `before = 4` represents Cohort I and saves under `results/Cohort_IV/`.
-
 The output may include files named `overall.*.parquet`, `SUMMARY.*.parquet`, `CV.*.parquet`, and diagnostic files under `diagnostics/`. Successful console output reports each comorbidity and either a DML estimate or a readiness decision.
 
 
