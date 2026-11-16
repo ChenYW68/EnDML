@@ -79,20 +79,6 @@ Every worksheet uses the same five-row preamble + data layout:
 | 4 | Column header row, starting with the literal cell `Cohort`. |
 | 5+ | Data rows. First five columns are always `Cohort`, `Comorbidity`, `Subgroup variable`, `Subgroup level`, `n`; remaining columns hold the metric estimates and 95 % CIs for that figure (`aR0`, `aR1`, `aAR`, `aRR`, plus `*_lo` / `*_hi` where applicable). |
 
-### Visual style
-
-Two palettes distinguish main-text from supplementary data:
-
-| Band | Main text (`Figure 2–7`) | Supplementary (`Figure S…`) |
-| --- | --- | --- |
-| Title row | fill `#1F4E79`, white bold 14 pt | fill `#595959`, white bold 14 pt |
-| Subtitle row | fill `#D9E1F2`, italic `#1F3864` 11 pt | fill `#F2F2F2`, italic `#404040` 11 pt |
-| Header row | fill `#2E75B6`, white bold 11 pt, bottom border | fill `#808080`, white bold 11 pt, bottom border |
-| Data rows | alternating `#DEEBF7` / white, 10 pt | alternating `#EDEDED` / white, 10 pt |
-| Sheet tab | default | gray `#808080` |
-
-Each sheet has `freeze_panes = A5` so the title, subtitle and header stay
-pinned while scrolling.
 
 ### Main-text sheets
 
