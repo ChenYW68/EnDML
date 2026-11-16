@@ -47,7 +47,7 @@ with
 
 The output files include predicted outcomes for the test sets and estimated propensity scores.
 
-# Figure and data — contents
+# Data
 
 This folder reproduces every main-text and supplementary figure of the
 Long COVID manuscript (NCOMMS-26-052891, Revision 2b) from a single
@@ -55,9 +55,9 @@ curated workbook.
 
 | File | Role |
 | --- | --- |
+| `Simulated_data_dml.parquet` | Simulated data. |
 | `Source Data.xlsx` | Curated numeric source data, one worksheet per figure. The deposited Source Data file for the paper. |
 | `generate_figures.R` | Reproducibility script. Reads `Source Data.xlsx` and emits every figure as a vector PDF and a high-resolution PNG. |
-| `Source Data.backup_*.xlsx` | Timestamped safety backups taken before each structural change (sort, restyle). Not used by the script. |
 | `generated_figures/` | Output directory written by `generate_figures.R`. Not shipped. |
 
 ---
