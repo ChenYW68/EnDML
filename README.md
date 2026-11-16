@@ -50,7 +50,6 @@ For the default cohort setting, the main analysis writes parquet summaries, cros
 ```text
 results/Cohort_I/
 ```
-The output may include files named `overall.*.parquet`, `SUMMARY.*.parquet`, `CV.*.parquet`, and diagnostic files under `diagnostics/`. Successful console output reports each comorbidity and either a DML estimate or a readiness decision.
-
+The output files include predicted outcomes for the test sets and estimated propensity scores.
 
 
