@@ -45,11 +45,7 @@ with
 
 ## 3. Expected output
 
-For the default cohort setting, the main analysis writes parquet summaries, cross-validation results, and, when enabled, diagnostic files under:
-
-```text
-results/Cohort_I/
-```
 The output files include predicted outcomes for the test sets and estimated propensity scores.
+
 
 
