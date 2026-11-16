@@ -6,7 +6,7 @@ This paper addresses two key scientific questions: (1) whether pre-infection com
 
 # Software and R-package dependencies
 
-The code has been tested using R version 4.4.0, with the required R packages and Java/H2O dependencies installed. The tested software versions include arrow (21.0.0.1), data.table (1.16.0), h2o (3.46.0.7), glmnet (4.1-9), caret (6.0-94), Hmisc (5.1-3), ggplot2 (4.0.3), mice (3.18.0), and Java (23.0.1, 64-bit). A properly configured Java environment is required to support the H2O machine learning framework. Compatibility with other software versions has not been verified.
+The code has been tested using R version 4.4.1, with the required R packages and Java/H2O dependencies installed. The tested software versions include arrow (21.0.0.1), caret (6.0-94), data.table (1.16.0), dplyr (1.1.4), ggplot2 (4.0.3), ggtext (0.2.0), glmnet (4.1-9), Hmisc (5.1-3), maps (3.4.2), mice (3.18.0), patchwork (1.3.0), readxl (1.4.3), scales (1.4.0), stringr (1.5.1), tidyr (1.3.1), and Java (23.0.1, 64-bit). A properly configured Java environment is required to support the H2O machine-learning framework.
 
 ## 1. Demo
 
