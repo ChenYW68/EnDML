@@ -1,11 +1,9 @@
 # EnDML
 
 ## Comorbidity Exposure-Window Definitions and Multidimensional Disparities in Long COVID Risk
+This Github page provides code and simulated data for the manuscript: Chen Y, Chen Z, Yang G, et al. [Comorbidity Exposure-Window Definitions and Multidimensional Disparities in Long COVID Risk: Evidence from a US National Cohort (2020-2024)](https://www.medrxiv.org/content/10.64898/2026.07.11.26357794v1). medRxiv, 2026: 2026.07. 11.26357794.
 
-<<<<<<< HEAD
-Ensemble double/debiased machine learning for binary exposure and outcome variables to assess heterogeneous Long COVID risk associated with preexisting comorbidities.
-
-This repository provides R source code and simulated data for the manuscript: Chen Y, Chen Z, Yang G, et al. [Comorbidity Exposure-Window Definitions and Multidimensional Disparities in Long COVID Risk: Evidence from a US National Cohort (2020-2024)](https://www.medrxiv.org/content/10.64898/2026.07.11.26357794v1). medRxiv, 2026: 2026.07.11.26357794.
+This paper addresses two key scientific questions: (1) whether pre-infection comorbidities alone are sufficient to assess the risk of developing long COVID (LC); and (2) which comorbidities have risk estimates that are most sensitive to the definitions of comorbidity exposure windows. To address these questions, we employ ensemble double/debiased machine learning (EnDML) for binary exposures and outcomes to estimate the heterogeneous risks of developing LC associated with preexisting comorbidities.
 
 ## Code and Software Submission Checklist
 
@@ -126,9 +124,5 @@ Rscript R/simulate_100k.R
 
 The script uses a fixed seed (`20261016`) and writes `data/Simulated_data_dml.parquet`. The remaining scripts can be run after the main analysis to construct manuscript tables, figures, sensitivity summaries, covariate-balance outputs, and propensity-score diagnostics. Their input and output conventions are described in the header comments of each script.
 =======
-This Github page provides code and simulated data for the manuscript: Chen Y, Chen Z, Yang G, et al. [Comorbidity Exposure-Window Definitions and Multidimensional Disparities in Long COVID Risk: Evidence from a US National Cohort (2020-2024)](https://www.medrxiv.org/content/10.64898/2026.07.11.26357794v1). medRxiv, 2026: 2026.07. 11.26357794.
 
-This paper addresses two key scientific questions: (1) whether pre-infection comorbidities alone are sufficient to assess the risk of developing long COVID (LC); and (2) which comorbidities have risk estimates that are most sensitive to the definitions of comorbidity exposure windows.
 
-Ensemble double/debiased machine learning for binary exposure and outcome variables to assess heterogeneous Long COVID risk associated with preexisting comorbidities.
->>>>>>> f0fedcadbdbe93c2b9ed56e68eb1a144f7a9ca61
