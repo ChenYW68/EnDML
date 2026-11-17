@@ -105,7 +105,7 @@ Every worksheet uses the same five-row preamble + data layout:
 | `Figure S17A`–`S17U` | S17 | Covariate balance under Cohort II. |
 | `Figure S18A`–`S18U` | S18 | Covariate balance under Cohort III. |
 | `Figure S19A`–`S19U` | S19 | Covariate balance under Cohort IV. |
-| `Figure S20A`, `S20B` | S20 | Central propensity-score support (1st–99th percentiles) under Cohorts I and II. |
+| `Figure S20A`, `S20B` | S20 | Central propensity-score support under Cohorts I and II. |
 | `Figure S21A`, `S21B` | S21 | Central propensity-score support under Cohorts III and IV. |
 
 Figure 1 and Figure S1 are schematic diagrams with no numeric payload
@@ -119,20 +119,15 @@ and therefore have no corresponding worksheets.
 
 Rebuild every figure in the manuscript and supplement directly from
 `Source Data.xlsx`, so a reviewer can verify any panel by sourcing a
-single script. No access to the raw cohort microdata or ensemble
-estimator is required.
+single script. 
 
 ### Inputs
 
-- `Source Data.xlsx`, discovered automatically in either the script's
-  own directory or a sibling `Figure and data/` folder, so the script
-  runs correctly whether you source it from `Figure and data/` or from
-  the `Revision_2/` parent.
+- `Source Data.xlsx`
 
 ### Outputs
 
-Written to `generated_figures/` alongside the script (or in the
-`Revision_2/` parent when sourced from the parent):
+Written to `./generated_figures/`:
 
 | PDF / PNG stem | Figure |
 | --- | --- |
