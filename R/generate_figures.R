@@ -1,5 +1,3 @@
-#!/usr/bin/env Rscript
-
 ###############################################################################
 # Reproduce manuscript and supplementary figures from Source Data.xlsx
 #
@@ -8,13 +6,7 @@
 #
 # Output:
 #   generated_figures/ in the same directory. Each figure is written as a
-#   high-resolution PNG and a vector PDF.
-#
-# The workbook contains one worksheet per figure. Rows are already restricted
-# to the cohorts, comorbidities, subgroup variables, and years used by that
-# figure. The radar-chart sheets (Figure 2 and Figures S4-S6) retain the raw
-# risk/proportion scale used by radar_charts.R. Other risk sheets use the
-# percentage-point scale recorded in Source Data.xlsx. aRR is always a ratio.
+#   vector PDF.
 ###############################################################################
 
 required_packages <- c(
@@ -58,17 +50,14 @@ script_path <- if (length(file_arg) == 1) {
 }
 script_dir <- if (!is.na(script_path)) dirname(normalizePath(script_path)) else normalizePath(getwd())
 
-# Look for Source Data.xlsx in (1) the script's own directory and (2) a sibling
-# "Figure and data" folder below script_dir, so the script works whether it
-# is sourced from this folder or from the Revision_2 parent.
+
 candidate_paths <- c(
   file.path(script_dir, "Source Data.xlsx"),
   file.path(script_dir, "Figure and data", "Source Data.xlsx")
 )
 workbook_path <- candidate_paths[file.exists(candidate_paths)][1]
 
-# Write figures into Revision_2/generated_figures/ when run from the parent,
-# otherwise into a generated_figures/ folder next to the script.
+
 output_root <- if (basename(script_dir) == "Figure and data") dirname(script_dir) else script_dir
 output_dir <- file.path(output_root, "generated_figures")
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
@@ -81,14 +70,10 @@ if (is.na(workbook_path) || !file.exists(workbook_path)) {
   )
 }
 
-# A dry run reads and validates every requested worksheet but skips graphics.
-# Example: set GENERATE_FIGURES_DRY_RUN=1 before sourcing this script.
+
 dry_run <- identical(Sys.getenv("GENERATE_FIGURES_DRY_RUN"), "1")
 
-## Revision 2b comorbidity grouping
-##   Figure 2 (main text, new)  -> four target comorbidities
-##   Figure S2                  -> seven neuro/psychiatric/diabetes groups
-##   Figure S3                  -> nine cardiovascular/cancer groups
+
 fig2_comorbidities <- c(
   "Hypertension", "Chronic_lung_disease",
   "Kidney_disease", "Liver_disease"
@@ -116,10 +101,7 @@ all_comorbidities <- c(
   "Cardiomyopathy", "Cancer", "Malignant_tumor", "Benign_tumor"
 )
 
-# Kept for backward compatibility within the script; the eight-group
-# definition from R1/R2a was split into fig2 (4) + the first two of S2
-# (Neuro_psych_disorders, Diabetes) + the first two of S3 (Cardiovascular,
-# Cancer) in Revision 2b. Downstream code uses the named lists above.
+
 main_comorbidities <- c(
   fig2_comorbidities,
   "Neuro_psych_disorders", "Diabetes", "Cardiovascular", "Cancer"
@@ -162,10 +144,7 @@ base_theme <- function(base_size = 11) {
     )
 }
 
-# Worksheets contain descriptive rows above the data header. Locate the header
-# by its first cell ("Cohort") so both legacy four-row sheets and the newer
-# five-row radar sheets are read correctly. Standardize the first five fields
-# and retain the metric column names verbatim.
+
 read_figure_sheet <- function(sheet_name) {
   raw <- read_excel(workbook_path, sheet = sheet_name, col_names = FALSE)
   header_row <- which(as.character(raw[[1]]) == "Cohort")[1]
@@ -189,8 +168,7 @@ read_figure_sheet <- function(sheet_name) {
     )
 }
 
-# Find the estimate and confidence-limit columns for one metric. The matching
-# is anchored at the beginning so aR1 never accidentally matches aRR.
+
 metric_columns <- function(dat, metric) {
   escaped <- stringr::str_replace_all(metric, "([.])", "\\\\\\1")
   list(
@@ -229,14 +207,6 @@ save_figure <- function(plot, stem, width, height) {
 }
 
 ###############################################################################
-# Figure 3 and Figures S4-S6: radar charts by population subgroup
-#
-# These functions reproduce the logic in radar_charts/radar_charts.R, but read
-# only from Source Data.xlsx. Each two-column panel compares Cohort I with Cohort II
-# for race, area, age, and sex. Within a subgroup row, both cohorts share the
-# same radial scale. Shaded bands are 95% confidence intervals and solid lines
-# are point estimates across all 21 comorbidity outcomes.
-# (Was Figure 2 in R2a; sheet renamed "Figure 2" -> "Figure 3" in Source Data.xlsx.)
 ###############################################################################
 radar_subgroups <- c("race", "UrbanRural", "age_group", "sex")
 radar_legend_titles <- c(race = "Race", UrbanRural = "Area", age_group = "Age", sex = "Sex")
@@ -824,7 +794,6 @@ generate_radar_figure <- function(sheet_name, metric_name, output_stem,
 }
 
 # Figure 3: adjusted attributable risk (aAR).
-# (Was Figure 2 in R2a; worksheet renamed accordingly in Source Data.xlsx.)
 generate_radar_figure("Figure 3", "aAR", "Figure_3_subpopulations",
                       cex = c(1.4, 0.49, 2.2),
                       legend_cex = 1.2,
@@ -846,19 +815,6 @@ generate_radar_figure("Figure S6", "aRR", "Figure_S6_aRR_subpopulations",
                       width = 7.0, height = 11.0)
 
 ###############################################################################
-# Figure 2 and Figures S2-S3: risks by the number of additional comorbidities
-#
-# Each figure contains four metric panels: aR0, aR1, aAR, and aRR. Points are
-# model estimates and vertical bars are 95% confidence intervals. Cohort I
-# and Cohort II are horizontally dodged.
-#
-# Revision 2b split the previous 8/12 grouping into three figures:
-#   Figure 2 -- four target comorbidities (Hypertension, Chronic lung
-#               disease, Kidney disease, Liver disease); promoted to the
-#               main text.
-#   Figure S2 -- seven neurological, psychiatric, and diabetes comorbidity
-#                groups.
-#   Figure S3 -- nine cardiovascular and cancer comorbidity groups.
 ###############################################################################
 
 make_multimorbidity_figure <- function(
@@ -880,7 +836,7 @@ make_multimorbidity_figure <- function(
 
   raw <- read_figure_sheet(sheet_name)
 
-  # Replace transparent hollow circles with white-filled circles
+
   point_shapes <- cohort_shapes
   point_shapes[point_shapes == 1] <- 21
 
@@ -1294,14 +1250,6 @@ make_multimorbidity_figure(
 
 
 ###############################################################################
-# Regional-map helper for Figures 4-5 and Figures S7-S11
-#
-# The sheet supplies one estimate per census region, cohort, and comorbidity.
-# State polygons are assigned to their census region, then joined to the figure
-# data. Each state in a region therefore receives that region's estimate. The
-# label printed once per region gives the estimate and its 95% CI.
-# (In R2a, the main-text region maps were Figures 3-4; they became 4-5 in R2b
-# after the new multimorbidity Figure 2 was inserted.)
 ###############################################################################
 state_region_lookup <- tibble(
   state_name = state.name,
@@ -1357,11 +1305,6 @@ make_region_map <- function(sheet_name, metric_name, stem,
       )
     )
 
-  # Order panels so facet_wrap(ncol = 4) lays them out as:
-  #   row 1: Cohort I  for comorbidities 1..4
-  #   row 2: Cohort II for the same comorbidities 1..4
-  #   row 3: Cohort I  for comorbidities 5..8
-  #   row 4: Cohort II for the same comorbidities 5..8, and so on.
   cohort_order <- intersect(
     c("Cohort I", "Cohort II", "Cohort III", "Cohort IV"),
     unique(as.character(dat$cohort))
@@ -1466,7 +1409,6 @@ make_region_map <- function(sheet_name, metric_name, stem,
 }
 ###############################################################################
 # Figure 4: aAR across census regions for the eight primary groups.
-# (Was Figure 3 in R2a; worksheet renamed "Figure 3" -> "Figure 4" in R2b.)
 ###############################################################################
 make_region_map("Figure 4", "aAR", "Figure_4_aAR_regions",
                 width = 8.1, height = 8.2,
@@ -1481,7 +1423,6 @@ make_region_map("Figure 4", "aAR", "Figure_4_aAR_regions",
 
 ###############################################################################
 # Figure 5: aRR across census regions for the eight primary groups.
-# (Was Figure 4 in R2a; sheet renamed "Figure 4" -> "Figure 5" in R2b.)
 ###############################################################################
 make_region_map("Figure 5", "aRR", "Figure_5_aRR_regions",
                 width = 8.1, height = 8.2,
@@ -1496,15 +1437,12 @@ make_region_map("Figure 5", "aRR", "Figure_5_aRR_regions",
 
 ###############################################################################
 # Figure S7: two regional maps for aR0 and aR1. They are saved as two separate
-# PDFs because downstream LaTeX typesetting combines them into Figure S7 (a, b).
 ###############################################################################
 make_region_map("Figure S7", "aR0", "Figure_S7a_aR0_regions", 16, 12)
 make_region_map("Figure S7", "aR1", "Figure_S7b_aR1_regions", 16, 12)
 
 ###############################################################################
 # Figures S8-S11: regional aR0, aR1, aAR, and aRR for the remaining groups.
-# The greater number of comorbidities requires a taller plotting canvas.
-# (Were S9-S12 in R1; worksheets renamed accordingly in Source Data.xlsx.)
 ###############################################################################
 make_region_map("Figure S8", "aR0", "Figure_S8_aR0_regions_other", 16, 17)
 make_region_map("Figure S9", "aR1", "Figure_S9_aR1_regions_other", 16, 17)
@@ -1513,28 +1451,7 @@ make_region_map("Figure S11", "aRR", "Figure_S11_aRR_regions_other", 16, 17)
 
 ###############################################################################
 # Temporal-trend helper for Figures 6-7 and S12-S15
-#
-# Lines connect annual estimates from 2020 through 2024. Shaded ribbons show
-# 95% confidence intervals. A horizontal reference line is drawn at 0 for
-# aAR and at 1 for aRR. The same routine also handles aR0 and aR1, for which no
-# null-effect reference line is required.
-# (In R2a, the main-text temporal panels were Figures 5-6; they became 6-7
-# in R2b after the new multimorbidity Figure 2 was inserted.)
 ###############################################################################
-
-# ============================================================
-# Temporal figure
-# CI ribbon + line + point in legend
-# Hollow circles have white interiors
-# ============================================================
-
-
-# ============================================================
-# Temporal figure
-# CI ribbon + line + point in legend
-# Hollow circles have white interiors
-# ============================================================
-
 make_temporal_figure <- function(
     sheet_name,
     metric_name,
@@ -1878,7 +1795,6 @@ make_temporal_figure <- function(
 
 # ============================================================
 # Figure 6: aAR temporal trends
-# (Was Figure 5 in R2a; sheet renamed "Figure 5" -> "Figure 6" in R2b.)
 # ============================================================
 
 make_temporal_figure(
@@ -1898,7 +1814,6 @@ make_temporal_figure(
 
 ###############################################################################
 # Figure 7: temporal trends in aRR for the two primary cohorts.
-# (Was Figure 6 in R2a; sheet renamed "Figure 6" -> "Figure 7" in R2b.)
 ###############################################################################
 make_temporal_figure("Figure 7", "aRR", "Figure_7_aRR_year", c("Cohort I", "Cohort II"),
                      width = 8.1,
@@ -1910,10 +1825,6 @@ make_temporal_figure("Figure 7", "aRR", "Figure_7_aRR_year", c("Cohort I", "Coho
 
 ###############################################################################
 # Figures S12-S15: four-cohort temporal sensitivity analyses.
-#
-# These panels compare Cohorts I-IV for aR0, aR1, aAR, and aRR, respectively.
-# Each sheet contains 20 comorbidities, five years, and four cohorts (400 rows).
-# (Were S13-S16 in R1; worksheets renamed accordingly in Source Data.xlsx.)
 ###############################################################################
 four_cohorts <- c("Cohort I", "Cohort II", "Cohort III", "Cohort IV")
 make_temporal_figure("Figure S12", "aR0", "Figure_S12_aR0_year", four_cohorts)
@@ -1923,14 +1834,6 @@ make_temporal_figure("Figure S15", "aRR", "Figure_S15_aRR_year", four_cohorts)
 
 ###############################################################################
 # Figures S16-S19: Covariate balance for Cohorts I-IV
-#
-# Each cohort produces 21 subfigures (A-U), one per comorbidity group, that
-# plot unweighted (grey filled circle) and IPW-weighted (black filled
-# triangle) standardized mean differences for every covariate. Rows are
-# sorted by max |SMD| descending so the most imbalanced covariates appear at
-# the top. Dashed grey reference lines mark the +-0.1 threshold. The visual
-# style is taken from Covariate_Balance.R and each panel is saved as its own
-# vector PDF, with height scaled to the number of covariates plotted.
 ###############################################################################
 balance_comorbidity_ids <- c(
   "Any_comorbidities", "Hypertension", "Chronic_lung_disease",
@@ -1948,11 +1851,9 @@ balance_figures <- c(
   "S18" = "Cohort III",
   "S19" = "Cohort IV"
 )
-# (Were S17-S20 in R1; worksheets renamed accordingly in Source Data.xlsx.)
 smd_threshold <- 0.1
 
-# Panels S16-S19 have their own column set (covariate, level, type,
-# smd_unweighted, smd_weighted, ...), so they need a separate reader.
+
 read_balance_sheet <- function(sheet_name) {
   raw <- suppressMessages(
     read_excel(workbook_path, sheet = sheet_name, col_names = FALSE)
@@ -2073,17 +1974,6 @@ for (figure_code in names(balance_figures)) make_balance_figure(figure_code)
 
 ###############################################################################
 # Figures S20-S21: Propensity-score central-support intervals
-#
-# Each panel plots the 1st-99th percentile range of the cross-fitted
-# estimated propensity score, separately for Unexposed (X=0) and Exposed
-# (X=1) groups, within each of the 21 comorbidities. Comorbidities are
-# re-ordered by the Treated median so the darker Treated intervals climb
-# from bottom to top. Styling follows the interval_plot block in
-# make_Propensity_Score_Overlap_figurs.R: theme_classic, grey80/grey30
-# colour pair, top legend with a wide key, x-axis clamped to [0, 1].
-#
-#   Figure S20(A) = Cohort I,   Figure S20(B) = Cohort II
-#   Figure S21(A) = Cohort III, Figure S21(B) = Cohort IV
 ###############################################################################
 propensity_figures <- list(
   list(code = "S20A", sheet = "Figure S20A", cohort = "Cohort I"),
@@ -2091,10 +1981,7 @@ propensity_figures <- list(
   list(code = "S21A", sheet = "Figure S21A", cohort = "Cohort III"),
   list(code = "S21B", sheet = "Figure S21B", cohort = "Cohort IV")
 )
-# (Were S21A/B and S22A/B in R1; worksheets renamed accordingly in Source Data.xlsx.)
 
-# These sheets use a different column set (Cohort, Comorbidity_label,
-# Treatment, low, median, high), so they need a dedicated reader.
 read_propensity_sheet <- function(sheet_name) {
   raw <- suppressMessages(
     read_excel(workbook_path, sheet = sheet_name, col_names = FALSE)
